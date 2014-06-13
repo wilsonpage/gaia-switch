@@ -1,0 +1,126 @@
+
+gaia-switch {
+  display: block;
+  overflow: hidden
+}
+
+button {
+  box-sizing: border-box;
+  display: block;
+  overflow: hidden;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+}
+
+button::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/** Inner
+ ---------------------------------------------------------*/
+
+.inner {
+  --width: 6rem;
+  --height: 2.7rem;
+
+  display: flex;
+  width: 100%;
+}
+
+/** Label
+ ---------------------------------------------------------*/
+
+.label {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  font-size: 1.5rem;
+  color: var(--text-color, #5f5f5f);
+}
+
+/** Track
+ ---------------------------------------------------------*/
+
+.track {
+  /*height: 100%;*/
+
+  align-self: flex-end;
+  width: var(--width);
+  height: var(--height);
+  border-radius: 2.7rem;
+  overflow: hidden;
+  cursor: pointer;
+
+  background-color: var(--base-color-shade-1, #c7c7c7);
+  border: var(--border-input, 0);
+}
+
+[checked] .track {
+  background: var(--brand-color, #00aacc);
+}
+
+/** Button
+ ---------------------------------------------------------*/
+
+.head {
+  position: relative;
+  box-sizing: border-box;
+  width: 2.7rem;
+  height: 100%;
+  transition: transform 200ms ease;
+  will-change: transform;
+}
+
+[checked] .head {
+  transform:
+    translateX(var(--width))
+    translateX(-2.7rem);
+}
+
+/** Tick Icon
+ ---------------------------------------------------------*/
+
+.icon {
+  position: absolute;
+  top: 0;
+  right: 100%;
+  margin-right: 1.2rem;
+
+  height: 100%;
+  line-height: var(--height);
+  color: var(--text-color-brand, #fff);
+  font-size: 1.6rem;
+}
+
+.circle-1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4.2rem;
+  height: 4.2rem;
+  margin: -2.1rem 0 0 -2.1rem;
+  background: var(--base-color-shade-2, rgba(0,0,0,0.05));
+  border-radius: 50%
+}
+
+[checked] .circle-1 {
+  background: rgba(255,255,255,0.34);
+}
+
+.circle-2 {
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--height);
+  height: var(--height);
+  background: #00caf2;
+  border-radius: 50%;
+  background: var(--text-color-brand, #fff);
+  border: solid 3px transparent;
+  background-clip: padding-box;
+}
