@@ -2,6 +2,7 @@
 'use strict';
 
 var utils = require('gaia-component-utils');
+var Drag = require('drag');
 
 // Extend from the HTMLElement prototype
 var proto = Object.create(HTMLElement.prototype);
@@ -17,14 +18,43 @@ var stylesheets = [
 
 proto.createdCallback = function() {
   var shadow = this.createShadowRoot();
-  this._template = template.content.cloneNode(true);
-  this._inner = this._template.firstElementChild;
+  var self = this;
 
+  this._template = template.content.cloneNode(true);
+
+  this.els = {};
+  this.els.inner = this._template.firstElementChild;
+  this.els.track = this._template.querySelector('.js-track');
+  this.els.handle = this._template.querySelector('.js-handle');
+
+  // this.els.handle.addEventListener('click', this.onClick.bind(this));
+  this.els.inner.addEventListener('mousemove', function(e) {
+    e.stopPropagation();
+    var event = new CustomEvent('mousemove', { bubbles: true });
+    event.clientX = e.clientX;
+    event.clientY = e.clientY;
+    self.parentNode.dispatchEvent(event);
+  });
+
+  // this.addEventListener('touchmove', this.onClick.bind(this));
   this.checked = this.hasAttribute('checked');
-  this._inner.addEventListener('click', this.onClick.bind(this));
+
+  this.drag = window.d = new Drag({
+    handle: this.els.handle,
+    container: this.els.track
+  });
+
+
 
   shadow.appendChild(this._template);
   utils.style.call(this, stylesheets);
+
+  this.drag.configureMinMax();
+};
+
+proto.attachedCallback = function() {
+  this.drag.configureMinMax();
+  console.log('attachedCallback');
 };
 
 proto.toggle = function(value) {
@@ -41,10 +71,10 @@ proto.setChecked = function(value) {
 
   if (value) {
     this.setAttribute('checked', '');
-    this._inner.setAttribute('checked', '');
+    this.els.inner.setAttribute('checked', '');
   } else {
     this.removeAttribute('checked');
-    this._inner.removeAttribute('checked');
+    this.els.inner.removeAttribute('checked');
   }
 
   if (changed) {
@@ -88,8 +118,8 @@ Object.defineProperty(proto, 'checked', {
 var template = document.createElement('template');
 template.innerHTML = '<div class="inner">' +
   '<div class="label"><content></content></div>' +
-  '<div class="track">' +
-    '<div class="head">' +
+  '<div class="track js-track">' +
+    '<div class="head js-handle">' +
       '<span class="icon icon-tick"></span>' +
       '<div class="circle-1"></div>' +
       '<div class="circle-2"></div>' +

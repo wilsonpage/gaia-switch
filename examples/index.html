@@ -16,12 +16,26 @@
     section {
       text-align: center;
     }
+
+    .track {
+      width: 100px;
+      height: 50px;
+      background: silver
+    }
+
+    .thumb {
+      width: 50px;
+      height: 50px;
+      background: red;
+    }
   </style>
   <script>
     window.packagesBaseUrl = '../bower_components/';
     window.GaiaSwitchBaseUrl = '../';
   </script>
   <script src="../bower_components/gaia-component-utils/index.js"></script>
+  <script src="../bower_components/evt/index.js"></script>
+  <script src="../bower_components/drag/index.js"></script>
   <script src="../script.js"></script>
 </head>
 <body role="application">
@@ -34,10 +48,13 @@
     </gaia-switch>
   </section>
   <div id="result"></div>
+
+  <div id="track" class="track">
+    <div id="thumb" class="thumb"></div>
+  </div>
   <script>
   (function() {
     'use strict';
-    var result = document.getElementById('result');
     var elements = document.querySelectorAll('gaia-switch');
     [].forEach.call(elements, function(switchEl, index) {
       switchEl.addEventListener('click', function(e) {
@@ -46,6 +63,14 @@
       });
     });
   })();
+
+  var Drag = window.drag;
+  var myDrag = new Drag({
+    handle: thumb,
+    container: track
+  });
+
+  myDrag.configureMinMax();
   </script>
 </body>
 </html>

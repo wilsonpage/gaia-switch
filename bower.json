@@ -15,6 +15,7 @@
   ],
   "dependencies": {
     "gaia-icons": "gaia-components/gaia-icons",
-    "gaia-component-utils": "gaia-components/gaia-component-utils#~0.1.0"
+    "gaia-component-utils": "gaia-components/gaia-component-utils#~0.1.0",
+    "evt": "wilsonpage/evt#~0.4.0"
   }
 }
