@@ -87,15 +87,9 @@ Object.defineProperty(proto, 'checked', {
 // using HTML Imports (bug 877072).
 var template = document.createElement('template');
 template.innerHTML = '<div class="inner">' +
-  '<div class="label"><content></content></div>' +
-  '<div class="track">' +
-    '<div class="head">' +
-      '<span class="icon icon-tick"></span>' +
-      '<div class="circle-1"></div>' +
-      '<div class="circle-2"></div>' +
-    '</div>' +
-  '</div>' +
-'</div>';
+                        '<div class="track"></div>' +
+                        '<div class="handle"></div>' +
+                      '</div>';
 
 // Register and return the constructor
 return document.registerElement('gaia-switch', { prototype: proto });
