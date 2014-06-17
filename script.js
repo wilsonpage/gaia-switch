@@ -11,7 +11,6 @@ var packagesBaseUrl = window.packagesBaseUrl || '/bower_components/';
 var baseUrl = window.GaiaSwitchBaseUrl || packagesBaseUrl + 'gaia-switch/';
 
 var stylesheets = [
-  { url: packagesBaseUrl + 'gaia-icons/style.css' },
   { url: baseUrl + 'style.css', scoped: true }
 ];
 
