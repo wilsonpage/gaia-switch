@@ -3,7 +3,7 @@ gaia-switch {
   display: inline-block;
   overflow: hidden;
   position: relative;
-  top: -10px;
+  margin:-7.5px; /* margin set to compensate for extra vertical spacing when used in .menu */ 
 }
 
 .inner {
@@ -12,7 +12,7 @@ gaia-switch {
   width: 55px;
   height: 35px;
   padding: 0;
-  background: none;
+  background: transparent;
   border: 0;
 }
 
