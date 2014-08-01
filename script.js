@@ -111,8 +111,7 @@ proto.styleHack = function() {
     self.shadowRoot.appendChild(style.cloneNode(true));
     self.style.visibility = '';
     self.styled = true;
-    var event = new CustomEvent('styled');
-    setTimeout(this.dispatchEvent.bind(this, event));
+    self.dispatchEvent(new CustomEvent('styled'));
   });
 };
 
@@ -138,8 +137,7 @@ proto.setChecked = function(value) {
   }
 
   if (changed) {
-    var event = new CustomEvent('change');
-    setTimeout(this.dispatchEvent.bind(this, event));
+    this.dispatchEvent(new CustomEvent('change'));
   }
 };
 
