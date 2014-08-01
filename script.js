@@ -1,60 +1,83 @@
 (function(define){define(function(require,exports,module){
 'use strict';
 
-var utils = require('gaia-component-utils');
+/**
+ * Dependencies
+ */
+
 var Drag = require('drag');
+
+/**
+ * Locals
+ */
 
 // Extend from the HTMLElement prototype
 var proto = Object.create(HTMLElement.prototype);
+var baseComponents = window.COMPONENTS_BASE_URL || 'bower_components/';
+var base = window.GAIA_SWITCH_BASE_URL || baseComponents + 'gaia-switch/';
 
-// Allow baseurl to be overridden (used for demo page)
-var packagesBaseUrl = window.packagesBaseUrl || '/bower_components/';
-var baseUrl = window.GaiaSwitchBaseUrl || packagesBaseUrl + 'gaia-switch/';
-
-var stylesheets = [
-  { url: packagesBaseUrl + 'gaia-icons/style.css' },
-  { url: baseUrl + 'style.css', scoped: true }
-];
+/**
+ * Attributes supported
+ * by this component.
+ *
+ * @type {Object}
+ */
+proto.attrs = {
+  checked: true
+};
 
 proto.createdCallback = function() {
+  var tmpl = template.content.cloneNode(true);
   var shadow = this.createShadowRoot();
-  var self = this;
-
-  this._template = template.content.cloneNode(true);
 
   this.els = {};
   this.els.inner = this._template.firstElementChild;
   this.els.track = this._template.querySelector('.js-track');
   this.els.handle = this._template.querySelector('.js-handle');
 
-  // this.els.handle.addEventListener('click', this.onClick.bind(this));
-  this.els.inner.addEventListener('mousemove', function(e) {
-    e.stopPropagation();
-    var event = new CustomEvent('mousemove', { bubbles: true });
-    event.clientX = e.clientX;
-    event.clientY = e.clientY;
-    self.parentNode.dispatchEvent(event);
-  });
-
-  // this.addEventListener('touchmove', this.onClick.bind(this));
   this.checked = this.hasAttribute('checked');
 
-  this.drag = window.d = new Drag({
+  this.drag = new Drag({
     handle: this.els.handle,
     container: this.els.track
   });
 
+  shadow.appendChild(tmpl);
+  this.styleHack();
 
-
-  shadow.appendChild(this._template);
-  utils.style.call(this, stylesheets);
-
-  this.drag.configureMinMax();
+  this.addEventListener('styled', this.drag.updateDimensions);
 };
 
-proto.attachedCallback = function() {
-  this.drag.configureMinMax();
-  console.log('attachedCallback');
+/**
+ * Load in the the component's styles.
+ *
+ * We're working around a few platform bugs
+ * here related to @import in the shadow-dom
+ * stylesheet. When HTML-Imports are ready
+ * we won't have to use @import anymore.
+ *
+ * @private
+ */
+proto.styleHack = function() {
+  var style = document.createElement('style');
+  var self = this;
+
+  this.style.visibility = 'hidden';
+  style.innerHTML = '@import url(' + base + 'style.css);';
+  style.setAttribute('scoped', '');
+  this.classList.add('content');
+  this.appendChild(style);
+
+  // There are platform issues around using
+  // @import inside shadow root. Ensuring the
+  // stylesheet has loaded before putting it in
+  // the shadow root seems to work around this.
+  style.addEventListener('load', function() {
+    self.shadowRoot.appendChild(style.cloneNode(true));
+    self.style.visibility = '';
+    self.styled = true;
+    self.dispatchEvent(new CustomEvent('styled'));
+  });
 };
 
 proto.toggle = function(value) {
@@ -90,19 +113,23 @@ proto.attributeChangedCallback = function(attr, oldVal, newVal) {
 };
 
 proto.onClick = function(e) {
-  this.toggle();
+  this.checked = !this.checked;
+
+  // Dispatch a click event to any listeners to the app.
+  // We should be able to remove this when bug 887541 lands.
+  this.dispatchEvent(new MouseEvent('click', {
+    view: window,
+    bubbles: true,
+    cancelable: true
+  }));
 };
 
 /**
  * Proxy the checked property to the input element.
  */
 Object.defineProperty(proto, 'checked', {
-  get: function() {
-    return this._checked;
-  },
-  set: function(value) {
-    this.setChecked(value);
-  }
+  get: function() { return this._checked; },
+  set: function(value) { this.setChecked(value); }
 });
 
 // HACK: Create a <template> in memory at runtime.
@@ -116,16 +143,12 @@ Object.defineProperty(proto, 'checked', {
 // hack until we can import entire custom-elements
 // using HTML Imports (bug 877072).
 var template = document.createElement('template');
-template.innerHTML = '<div class="inner">' +
-  '<div class="label"><content></content></div>' +
-  '<div class="track js-track">' +
-    '<div class="head js-handle">' +
-      '<span class="icon icon-tick"></span>' +
-      '<div class="circle-1"></div>' +
-      '<div class="circle-2"></div>' +
+template.innerHTML = '<button class="inner">' +
+    '<div class="track"></div>' +
+    '<div class="handle">' +
+      '<div class="handle-head"></div>' +
     '</div>' +
-  '</div>' +
-'</div>';
+  '</button>';
 
 // Register and return the constructor
 return document.registerElement('gaia-switch', { prototype: proto });

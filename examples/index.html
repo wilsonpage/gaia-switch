@@ -9,12 +9,29 @@
     body {
       margin: 0;
       padding: 0;
-      font-size: 10px;
+      font: 10px sans-serif;
       background-color: #fff;
       width: 100%;
+      color: #444;
     }
-    section {
-      text-align: center;
+
+    ul {
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      display: flex;
+      list-style-type: none;
+      font-size: 16px;
+      padding: 0 1rem;
+      align-items: center;
+      border-bottom: solid 1px #eee;
+    }
+
+    li label {
+      flex: 1;
+      padding: 2rem 0;
     }
 
     .track {
@@ -40,12 +57,14 @@
 </head>
 <body role="application">
   <section>
-    <gaia-switch checked></gaia-switch>
-  </section>
-  <section>
-    <gaia-switch>
-      <label>With a label</label>
-    </gaia-switch>
+    <li>
+      <label>This is a label</label>
+      <gaia-switch checked></gaia-switch>
+    </li>
+    <li>
+      <label>This is a label</label>
+      <gaia-switch></gaia-switch>
+    </li>
   </section>
   <div id="result"></div>
 
