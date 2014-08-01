@@ -1,4 +1,4 @@
-# &lt;gaia-switch&gt;
+# &lt;gaia-switch&gt; ![](https://travis-ci.org/gaia-components/gaia-switch.svg)
 
 ## Installation
 
