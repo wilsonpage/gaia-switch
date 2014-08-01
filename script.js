@@ -30,22 +30,57 @@ proto.createdCallback = function() {
   var tmpl = template.content.cloneNode(true);
   var shadow = this.createShadowRoot();
 
-  this.els = {};
-  this.els.inner = this._template.firstElementChild;
-  this.els.track = this._template.querySelector('.js-track');
-  this.els.handle = this._template.querySelector('.js-handle');
+  this.els = {
+    inner: tmpl.querySelector('.js-inner'),
+    track: tmpl.querySelector('.js-track'),
+    handle: tmpl.querySelector('.js-handle')
+  };
 
+  // Bind context
+  this.toggle = this.toggle.bind(this);
+  this.onSnapped = this.onSnapped.bind(this);
+
+  // Configure
   this.checked = this.hasAttribute('checked');
 
+  // Make it draggable
   this.drag = new Drag({
     handle: this.els.handle,
     container: this.els.track
   });
 
   shadow.appendChild(tmpl);
+  this.bindEvents();
   this.styleHack();
+};
 
+/**
+ * Bind to to events.
+ *
+ * @private
+ */
+proto.bindEvents = function() {
   this.addEventListener('styled', this.drag.updateDimensions);
+  this.drag.on('ended', this.drag.snapToClosestEdge);
+  this.drag.on('snapped', this.onSnapped);
+  this.drag.on('tapped', this.toggle);
+};
+
+/**
+ * Sets the switch as `checked` depending
+ * on whether it snapped to the right.
+ *
+ * We remove all styling Drag applied
+ * during the drag so that our CSS
+ * can take over.
+ *
+ * @param  {Event} e
+ * @private
+ */
+proto.onSnapped = function(e) {
+  this.checked = e.x === 'right';
+  this.els.handle.style.transform = '';
+  this.els.handle.style.transition = '';
 };
 
 /**
@@ -76,11 +111,13 @@ proto.styleHack = function() {
     self.shadowRoot.appendChild(style.cloneNode(true));
     self.style.visibility = '';
     self.styled = true;
-    self.dispatchEvent(new CustomEvent('styled'));
+    var event = new CustomEvent('styled');
+    setTimeout(this.dispatchEvent.bind(this, event));
   });
 };
 
 proto.toggle = function(value) {
+  console.log('toggle');
   this.checked = !arguments.length ? !this.hasAttribute('checked') : value;
 };
 
@@ -112,18 +149,6 @@ proto.attributeChangedCallback = function(attr, oldVal, newVal) {
   }
 };
 
-proto.onClick = function(e) {
-  this.checked = !this.checked;
-
-  // Dispatch a click event to any listeners to the app.
-  // We should be able to remove this when bug 887541 lands.
-  this.dispatchEvent(new MouseEvent('click', {
-    view: window,
-    bubbles: true,
-    cancelable: true
-  }));
-};
-
 /**
  * Proxy the checked property to the input element.
  */
@@ -143,12 +168,15 @@ Object.defineProperty(proto, 'checked', {
 // hack until we can import entire custom-elements
 // using HTML Imports (bug 877072).
 var template = document.createElement('template');
-template.innerHTML = '<button class="inner">' +
-    '<div class="track"></div>' +
-    '<div class="handle">' +
-      '<div class="handle-head"></div>' +
-    '</div>' +
-  '</button>';
+template.innerHTML = [
+  '<div class="inner js-inner">',
+    '<div class="track js-track">',
+      '<div class="handle js-handle">',
+        '<div class="handle-head"></div>',
+      '</div>',
+    '</div>',
+  '</div>'
+].join('');
 
 // Register and return the constructor
 return document.registerElement('gaia-switch', { prototype: proto });

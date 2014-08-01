@@ -47,13 +47,12 @@
     }
   </style>
   <script>
-    window.packagesBaseUrl = '../bower_components/';
-    window.GaiaSwitchBaseUrl = '../';
+    window.GAIA_SWITCH_BASE_URL = './';
   </script>
-  <script src="../bower_components/gaia-component-utils/index.js"></script>
-  <script src="../bower_components/evt/index.js"></script>
-  <script src="../bower_components/drag/index.js"></script>
-  <script src="../script.js"></script>
+  <script src="bower_components/gaia-component-utils/index.js"></script>
+  <script src="bower_components/evt/index.js"></script>
+  <script src="bower_components/drag/index.js"></script>
+  <script src="script.js"></script>
 </head>
 <body role="application">
   <section>
@@ -67,10 +66,6 @@
     </li>
   </section>
   <div id="result"></div>
-
-  <div id="track" class="track">
-    <div id="thumb" class="thumb"></div>
-  </div>
   <script>
   (function() {
     'use strict';
@@ -82,14 +77,6 @@
       });
     });
   })();
-
-  var Drag = window.drag;
-  var myDrag = new Drag({
-    handle: thumb,
-    container: track
-  });
-
-  myDrag.configureMinMax();
   </script>
 </body>
 </html>
