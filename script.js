@@ -167,7 +167,11 @@ gaia-switch {
   width: 100%;
   height: 100%;
   border-radius: 18px;
-  background: #000;
+
+  /* Themeable */
+
+  background-color:
+    var(--background-minus, #000);
 }
 
 /** Track Background
@@ -183,10 +187,14 @@ gaia-switch {
   height: 100%;
   border-radius: 25px;
   transform: scale(0);
-  background: #000;
   transition: transform 200ms ease;
   transition-delay: 300ms;
   will-change: transform;
+
+  /* Theamable */
+
+  background-color:
+    var(--color-highlight, #000)
 }
 
 /**
@@ -233,13 +241,18 @@ gaia-switch {
   cursor: pointer;
   align-items: center;
   justify-content: center;
+
+  /* Themable */
+
+  border-color:
+    var(--background-minus);
 }
 
 /** Handle Head Circle
  ---------------------------------------------------------*/
 
 .handle-head:after {
-  content: " ";
+  content: "";
   display: block;
   width: 16px;
   height: 16px;
