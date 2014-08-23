@@ -1,4 +1,5 @@
 (function(define){define(function(require,exports,module){
+/* jshint esnext:true */
 'use strict';
 
 /**
@@ -66,6 +67,13 @@ proto.bindEvents = function() {
   this.drag.on('tapped', this.toggle);
 };
 
+proto.styleHack = function() {
+  var style = this.shadowRoot.querySelector('style').cloneNode(true);
+  style.setAttribute('scoped', '');
+  this.appendChild(style);
+};
+
+
 /**
  * Sets the switch as `checked` depending
  * on whether it snapped to the right.
@@ -81,38 +89,6 @@ proto.onSnapped = function(e) {
   this.checked = e.x === 'right';
   this.els.handle.style.transform = '';
   this.els.handle.style.transition = '';
-};
-
-/**
- * Load in the the component's styles.
- *
- * We're working around a few platform bugs
- * here related to @import in the shadow-dom
- * stylesheet. When HTML-Imports are ready
- * we won't have to use @import anymore.
- *
- * @private
- */
-proto.styleHack = function() {
-  var style = document.createElement('style');
-  var self = this;
-
-  this.style.visibility = 'hidden';
-  style.innerHTML = '@import url(' + base + 'style.css);';
-  style.setAttribute('scoped', '');
-  this.classList.add('content');
-  this.appendChild(style);
-
-  // There are platform issues around using
-  // @import inside shadow root. Ensuring the
-  // stylesheet has loaded before putting it in
-  // the shadow root seems to work around this.
-  style.addEventListener('load', function() {
-    self.shadowRoot.appendChild(style.cloneNode(true));
-    self.style.visibility = '';
-    self.styled = true;
-    self.dispatchEvent(new CustomEvent('styled'));
-  });
 };
 
 proto.toggle = function(value) {
@@ -166,15 +142,131 @@ Object.defineProperty(proto, 'checked', {
 // hack until we can import entire custom-elements
 // using HTML Imports (bug 877072).
 var template = document.createElement('template');
-template.innerHTML = [
-  '<div class="inner js-inner">',
-    '<div class="track js-track">',
-      '<div class="handle js-handle">',
-        '<div class="handle-head"></div>',
-      '</div>',
-    '</div>',
-  '</div>'
-].join('');
+template.innerHTML = `
+<style>
+
+gaia-switch {
+  display: inline-block;
+  position: relative;
+}
+
+/** Inner
+ ---------------------------------------------------------*/
+
+.inner {
+  display: block;
+  width: 50px;
+  height: 32px;
+}
+
+/** Track
+ ---------------------------------------------------------*/
+
+.track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+  background: #000;
+}
+
+/** Track Background
+ ---------------------------------------------------------*/
+
+.track:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 25px;
+  transform: scale(0);
+  background: #000;
+  transition: transform 200ms ease;
+  transition-delay: 300ms;
+  will-change: transform;
+}
+
+/**
+ * [checked]
+ */
+
+[checked] .track:after {
+  transform: scale(1);
+}
+
+/** Handle
+ ---------------------------------------------------------*/
+
+.handle {
+  position: relative;
+  z-index: 1;
+  width: 32px;
+  height: 32px;
+  transition: transform 160ms linear;
+}
+
+/**
+ * [checked]
+ */
+
+[checked] .handle {
+  transform: translateX(18px)
+}
+
+/** Handle Head
+ ---------------------------------------------------------*/
+
+.handle-head {
+  display: flex;
+  box-sizing: border-box;
+  width: 36px;
+  height: 36px;
+  position: relative;
+  top: -2px;
+  left: -2px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #000;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+/** Handle Head Circle
+ ---------------------------------------------------------*/
+
+.handle-head:after {
+  content: " ";
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  transform: scale(0);
+  background: #000;
+  transition: transform 300ms ease;
+  transition-delay: 600ms;
+  will-change: transform;
+}
+
+/**
+ * [checked]
+ */
+
+[checked] .handle-head:after {
+  transform: scale(1);
+}
+
+</style>
+<div class="inner js-inner">
+  <div class="track js-track">
+    <div class="handle js-handle">
+      <div class="handle-head"></div>
+    </div>
+  </div>
+</div>`;
 
 // Register and return the constructor
 return document.registerElement('gaia-switch', { prototype: proto });
