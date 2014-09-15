@@ -44,27 +44,11 @@ proto.createdCallback = function() {
   // Configure
   this.checked = this.hasAttribute('checked');
 
-  // Make it draggable
-  this.drag = new Drag({
-    handle: this.els.handle,
-    container: this.els.track
-  });
-
   shadow.appendChild(tmpl);
-  this.bindEvents();
   this.styleHack();
-};
+  this.setupDrag();
 
-/**
- * Bind to to events.
- *
- * @private
- */
-proto.bindEvents = function() {
-  this.addEventListener('styled', this.drag.updateDimensions);
-  this.drag.on('ended', this.drag.snapToClosestEdge);
-  this.drag.on('snapped', this.onSnapped);
-  this.drag.on('tapped', this.toggle);
+  setTimeout(this.activateTransitions.bind(this));
 };
 
 proto.styleHack = function() {
@@ -73,6 +57,20 @@ proto.styleHack = function() {
   this.appendChild(style);
 };
 
+proto.setupDrag = function() {
+  this.drag = new Drag({
+    handle: this.els.handle,
+    container: this.els.track
+  });
+
+  this.drag.on('ended', this.drag.snapToClosestEdge);
+  this.drag.on('snapped', this.onSnapped);
+  this.drag.on('tapped', this.toggle);
+};
+
+proto.activateTransitions = function() {
+  this.els.inner.classList.add('transitions-on');
+};
 
 /**
  * Sets the switch as `checked` depending
@@ -92,8 +90,7 @@ proto.onSnapped = function(e) {
 };
 
 proto.toggle = function(value) {
-  console.log('toggle');
-  this.checked = !arguments.length ? !this.hasAttribute('checked') : value;
+  this.checked = typeof value !== 'boolean' ? !this.hasAttribute('checked') : value;
 };
 
 proto.setChecked = function(value) {
@@ -170,8 +167,11 @@ gaia-switch {
 
   /* Themeable */
 
-  background-color:
-    var(--background-minus, #000);
+  background:
+    var(--switch-background,
+    var(--background-minus,
+    var(--background-plus,
+    rgba(0,0,0,0.2))));
 }
 
 /** Track Background
@@ -189,12 +189,11 @@ gaia-switch {
   transform: scale(0);
   transition: transform 200ms ease;
   transition-delay: 300ms;
-  will-change: transform;
 
   /* Theamable */
 
   background-color:
-    var(--color-highlight, #000)
+    var(--highlight-color, #000)
 }
 
 /**
@@ -213,6 +212,13 @@ gaia-switch {
   z-index: 1;
   width: 32px;
   height: 32px;
+}
+
+/**
+ * transitions-on
+ */
+
+.transitions-on .handle {
   transition: transform 160ms linear;
 }
 
@@ -236,16 +242,26 @@ gaia-switch {
   top: -2px;
   left: -2px;
   border-radius: 50%;
-  background: #fff;
-  border: 1px solid #000;
+  border: 1px solid;
   cursor: pointer;
   align-items: center;
   justify-content: center;
 
   /* Themable */
 
+  background:
+    var(--switch-head-background,
+    var(--input-background,
+    var(--button-background,
+    var(--background-plus,
+    #fff))));
+
   border-color:
-    var(--background-minus);
+    var(--switch-head-border-color,
+    var(--switch-background,
+    var(--border-color,
+    var(--background-minus,
+    rgba(0,0,0,0.2)))));
 }
 
 /** Handle Head Circle
@@ -254,14 +270,17 @@ gaia-switch {
 .handle-head:after {
   content: "";
   display: block;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   transform: scale(0);
-  background: #000;
   transition: transform 300ms ease;
   transition-delay: 600ms;
-  will-change: transform;
+
+  /* Themeable */
+
+  background:
+    var(--highlight-color, #000)
 }
 
 /**
