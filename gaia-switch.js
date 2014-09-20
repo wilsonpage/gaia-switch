@@ -43,6 +43,7 @@ proto.createdCallback = function() {
 
   // Configure
   this.checked = this.hasAttribute('checked');
+  this.tabIndex = 0;
 
   shadow.appendChild(tmpl);
   this.styleHack();
@@ -300,8 +301,15 @@ gaia-switch {
   </div>
 </div>`;
 
+addEventListener('keypress', function(e) {
+  var isSpaceKey = e.which === 32;
+  var el = document.activeElement;
+  var isGaiaSwitch = el.tagName === 'GAIA-SWITCH';
+  if (isSpaceKey && isGaiaSwitch) { el.toggle(); }
+});
+
 // Register and return the constructor
-return document.registerElement('gaia-switch', { prototype: proto });
+module.exports = document.registerElement('gaia-switch', { prototype: proto });
 
 });})((function(n,w){return typeof define=='function'&&define.amd?
 define:typeof module=='object'?function(c){c(require,exports,module);}:function(c){
