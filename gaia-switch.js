@@ -91,6 +91,7 @@ proto.onSnapped = function(e) {
 };
 
 proto.toggle = function(value) {
+  console.log('toggle');
   this.checked = typeof value !== 'boolean' ? !this.hasAttribute('checked') : value;
 };
 
@@ -146,6 +147,7 @@ template.innerHTML = `
 gaia-switch {
   display: inline-block;
   position: relative;
+  outline: 0;
 }
 
 /** Inner
@@ -300,6 +302,39 @@ gaia-switch {
     </div>
   </div>
 </div>`;
+
+// Bind a 'click' delegate to the
+// window to listen for all clicks
+// and toggle checkboxes when required.
+addEventListener('click', function(e) {
+  var label = getLabel(e.target);
+  var gaiaSwitch = getLinkedSwitch(label);
+  if (gaiaSwitch) { gaiaSwitch.toggle(); }
+}, true);
+
+/**
+ * Find a gaiaSwitch when given a <label>.
+ *
+ * @param  {Element} label
+ * @return {GaiaCheckbox|null}
+ */
+function getLinkedSwitch(label) {
+  if (!label) { return; }
+  var id = label.getAttribute('for');
+  var el = id && document.getElementById(id);
+  return el && el.tagName === 'GAIA-SWITCH' ? el : null;// || label.querySelector('gaia-checkbox');
+}
+
+/**
+ * Walk up the DOM tree from a given
+ * element until a <label> is found.
+ *
+ * @param  {Element} el
+ * @return {HTMLLabelElement|undefined}
+ */
+function getLabel(el) {
+  return el && (el.tagName == 'LABEL' ? el : getLabel(el.parentNode));
+}
 
 addEventListener('keypress', function(e) {
   var isSpaceKey = e.which === 32;
