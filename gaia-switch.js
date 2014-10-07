@@ -14,8 +14,6 @@ var Drag = require('drag');
 
 // Extend from the HTMLElement prototype
 var proto = Object.create(HTMLElement.prototype);
-var baseComponents = window.COMPONENTS_BASE_URL || 'bower_components/';
-var base = window.GAIA_SWITCH_BASE_URL || baseComponents + 'gaia-switch/';
 
 /**
  * Attributes supported
