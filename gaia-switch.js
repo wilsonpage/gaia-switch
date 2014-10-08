@@ -89,7 +89,6 @@ proto.onSnapped = function(e) {
 };
 
 proto.toggle = function(value) {
-  console.log('toggle');
   this.checked = typeof value !== 'boolean' ? !this.hasAttribute('checked') : value;
 };
 
@@ -108,6 +107,9 @@ proto.setChecked = function(value) {
     this.removeAttribute('checked');
     this.els.inner.removeAttribute('checked');
   }
+
+  this.els.handle.style.transform = '';
+  this.els.handle.style.transition = '';
 
   if (changed) {
     this.dispatchEvent(new CustomEvent('change'));
