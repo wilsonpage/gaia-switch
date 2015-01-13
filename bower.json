@@ -14,6 +14,7 @@
     "tests"
   ],
   "dependencies": {
-    "drag": "gaia-components/drag#~0.1.0"
+    "drag": "gaia-components/drag#~0.1.0",
+    "gaia-component": "gaia-components/gaia-component#~0.2.0"
   }
 }
