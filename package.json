@@ -1,6 +1,6 @@
 {
   "name": "gaia-switch",
-  "main": "script.js",
+  "main": "gaia-switch.js",
   "directories": {
     "example": "examples",
     "test": "test"
