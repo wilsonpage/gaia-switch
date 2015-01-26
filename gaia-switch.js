@@ -22,6 +22,8 @@ var debug = 1 ? console.log.bind(console) : function() {};
  */
 
 module.exports = component.register('gaia-switch', {
+  rtl: true,
+
   created: function() {
     this.setupShadowRoot();
 
@@ -32,89 +34,124 @@ module.exports = component.register('gaia-switch', {
     };
 
     // Bind context
+    this.updateDir = this.updateDir.bind(this);
     this.toggle = this.toggle.bind(this);
-    this.onSnapped = this.onSnapped.bind(this);
-    this.onTapped = this.onTapped.bind(this);
+
+    // Events
+    on(this, 'click', e => this.onClick(e))
 
     // Configure
-    this.checked = this.getAttribute('checked');
-    this.tabIndex = 0;
     this.setupDrag();
+    this.disabled = this.getAttribute('disabled');
+    this.checked = this.getAttribute('checked');
 
-    setTimeout(() => { this.activateTransitions(); });
+    // Make tabable
+    this.tabIndex = 0;
+
+    // Stop transitions on creation
+    setTimeout(() => this.activateTransitions());
+  },
+
+  attached: function() {
+    debug('attached');
+    on(document, 'dirchanged', this.updateDir);
+  },
+
+  detached: function() {
+    debug('detached');
+    off(document, 'dirchanged', this.updateDir);
   },
 
   setupDrag: function() {
+    debug('setup drag');
+
     this.drag = new Drag({
-      handle: this.els.handle,
-      container: this.els.track
+      container: {
+        el: this.els.track,
+        width: 50,
+        height: 32
+      },
+
+      handle: {
+        el: this.els.handle,
+        width: 32,
+        height: 32,
+        x: 0,
+        y: 0
+      },
     });
 
-    this.drag.on('ended', this.drag.snapToClosestEdge);
-    this.drag.on('snapped', this.onSnapped);
-    this.drag.on('tapped', this.onTapped);
+    this.drag.on('ended', () => this.drag.snap());
+    this.drag.on('snapped', (e) => this.onSnapped(e));
   },
 
   activateTransitions: function() {
+    debug('activate transitions');
     this.els.inner.classList.add('transitions-on');
   },
 
-  onTapped: function(e) {
-    debug('tapped', e);
+  onClick: function(e) {
+    debug('click', e);
     e.stopPropagation();
+    if (this.drag.dragging) { return; }
+    if (this.disabled) { return; }
     this.toggle();
   },
 
-  /**
-   * Sets the switch as `checked` depending
-   * on whether it snapped to the right.
-   *
-   * We remove all styling Drag applied
-   * during the drag so that our CSS
-   * can take over.
-   *
-   * @param  {Event} e
-   * @private
-   */
+  updateDir: function() {
+    debug('update dir', dir());
+    this.updatePosition();
+  },
+
   onSnapped: function(e) {
-    debug('snapped', e);
-    this.checked = e.x === 'right';
-    this.els.handle.style.transform = '';
-    this.els.handle.style.transition = '';
+    debug('snapped', e, convert.toChecked(e.detail.x));
+    this.checked = convert.toChecked(e.detail.x);
   },
 
   toggle: function(value) {
     debug('toggle', value);
-    this.checked = typeof value !== 'boolean'
-      ? !this.hasAttribute('checked')
-      : value;
+    this.checked = !this.checked;
   },
 
-  setChecked: function(value) {
-    debug('set checked', value);
-
-    value = !!value;
-    if (this.checked === value) { return; }
-
-    var changed = this._checked !== undefined;
-    this._checked = value;
-
-    if (value) { this.setAttr('checked', ''); }
-    else { this.removeAttr('checked'); }
-
-    this.els.handle.style.transform = '';
-    this.els.handle.style.transition = '';
-
-    if (changed) { this.dispatchEvent(new CustomEvent('change')); }
+  updatePosition: function() {
+    var edge = convert.toEdge(this.checked);
+    this.drag.transition(edge, 0);
+    debug('updated position', edge);
   },
 
   attrs: {
     checked: {
       get: function() { return this._checked; },
       set: function(value) {
-        debug('checked setter', value);
-        value = value || value === '';
-        this.setChecked(value);
+        debug('set checked', value);
+        value = !!(value || value === '');
+
+        if (this._checked === value) { return; }
+
+        var changed = this._checked !== undefined;
+        this._checked = value;
+
+        this.els.handle.style.transform = '';
+        this.els.handle.style.transition = '';
+
+        if (value) { this.setAttr('checked', ''); }
+        else { this.removeAttr('checked'); }
+
+        this.updatePosition();
+
+        if (changed) { this.dispatchEvent(new CustomEvent('change')); }
+      }
+    },
+
+    disabled: {
+      get: function() { return this._disabled; },
+      set: function(value) {
+        value = !!(value || value === '');
+        if (this._disabled === value) { return; }
+        debug('set disabled', value);
+        this._disabled = value;
+        if (value) { this.setAttribute('disabled', ''); }
+        else { this.removeAttribute('disabled'); }
       }
     }
   },
@@ -132,7 +169,13 @@ module.exports = component.register('gaia-switch', {
     :host {
       display: inline-block;
       position: relative;
+      border-radius: 18px;
       outline: 0;
+    }
+
+    :host([disabled]) {
+      pointer-events: none;
+      opacity: 0.5;
     }
 
     /** Inner
@@ -207,16 +250,8 @@ module.exports = component.register('gaia-switch', {
      * transitions-on
      */
 
-    .transitions-on .handle {
-      transition: transform 160ms linear;
-    }
-
-    /**
-     * [checked]
-     */
-
-    [checked] .handle {
-      transform: translateX(18px)
+    .inner:not(.transitions-on) .handle {
+      transition: none !important;
     }
 
     /** Handle Head
@@ -259,8 +294,8 @@ module.exports = component.register('gaia-switch', {
     .handle-head:after {
       content: "";
       display: block;
-      width: 14px;
-      height: 14px;
+      width: 15px;
+      height: 15px;
       border-radius: 50%;
       transform: scale(0);
       transition: transform 300ms ease;
@@ -280,9 +315,22 @@ module.exports = component.register('gaia-switch', {
       transform: scale(1);
     }
 
-    </style>
-  `
+  </style>`
 });
+
+// Toggle switches when the component is
+// focused and the spacebar is pressed.
+addEventListener('keypress', function(e) {
+  var isSpaceKey = e.which === 32;
+  var el = document.activeElement;
+  var isGaiaSwitch = el.tagName === 'GAIA-SWITCH';
+  if (isSpaceKey && isGaiaSwitch) { el.click(); }
+});
+
+/**
+ * TODO: Replace this <label> stuff
+ * with smarter <gaia-label>
+ */
 
 // Bind a 'click' delegate to the
 // window to listen for all clicks
@@ -303,7 +351,7 @@ function getLinkedSwitch(label) {
   if (!label) { return; }
   var id = label.getAttribute('for');
   var el = id && document.getElementById(id);
-  return el && el.tagName === 'GAIA-SWITCH' ? el : null;// || label.querySelector('gaia-checkbox');
+  return el && el.tagName === 'GAIA-SWITCH' ? el : null;
 }
 
 /**
@@ -317,12 +365,53 @@ function getLabel(el) {
   return el && (el.tagName == 'LABEL' ? el : getLabel(el.parentNode));
 }
 
-addEventListener('keypress', function(e) {
-  var isSpaceKey = e.which === 32;
-  var el = document.activeElement;
-  var isGaiaSwitch = el.tagName === 'GAIA-SWITCH';
-  if (isSpaceKey && isGaiaSwitch) { el.toggle(); }
-});
+/**
+ * Utils
+ */
+
+/**
+ * Get the document direction.
+ *
+ * @return {String} ('ltr'|'rtl')
+ */
+function dir() {
+  return document.dir || 'ltr';
+}
+
+/**
+ * Handles convertion of edges values
+ * to checked Booleans and checked
+ * Booleans to edge values.
+ *
+ * This is because in LTR mode when the
+ * handle is against the left edge the
+ * switch is checked, in RTL mode it's
+ * the opposite.
+ *
+ * @type {Object}
+ */
+var convert = {
+  ltr: {
+    edges: { '0': false, '1': true },
+    checked: { 'true': '1', 'false': '0' }
+  },
+
+  rtl: {
+    edges: { '0': true, '1': false },
+    checked: { 'true': '0', 'false': '1' }
+  },
+
+  toChecked: function(edge) {
+    return this[dir()].edges[edge]
+  },
+
+  toEdge: function(checked) {
+    return this[dir()].checked[checked]
+  }
+};
+
+function on(el, name, fn) { el.addEventListener(name, fn); }
+function off(el, name, fn) { el.removeEventListener(name, fn); }
 
 });})((function(n,w){return typeof define=='function'&&define.amd?
 define:typeof module=='object'?function(c){c(require,exports,module);}:function(c){
