@@ -1,8 +1,5 @@
-(function(define){define(function(require,exports,module){
-/* jshint laxbreak:true */
-/* jshint esnext:true */
-
-'use strict';
+/* globals define */
+(function(define){'use strict';define(function(require,exports,module){
 
 /**
  * Dependencies
@@ -15,13 +12,15 @@ var Drag = require('drag');
  * Simple logger
  * @type {Function}
  */
-var debug = 1 ? console.log.bind(console) : function() {};
+var debug = 0 ? console.log.bind(console) : function() {};
 
 /**
  * Exports
  */
 
 module.exports = component.register('gaia-switch', {
+  extends: HTMLInputElement.prototype,
+
   rtl: true,
 
   created: function() {
@@ -38,7 +37,7 @@ module.exports = component.register('gaia-switch', {
     this.toggle = this.toggle.bind(this);
 
     // Events
-    on(this, 'click', e => this.onClick(e))
+    on(this, 'click', e => this.onClick(e));
 
     // Configure
     this.setupDrag();
@@ -219,7 +218,8 @@ module.exports = component.register('gaia-switch', {
       height: 100%;
       border-radius: 25px;
       transform: scale(0);
-      transition: transform 200ms ease;
+      transition-property: transform;
+      transition-duration: 200ms;
       transition-delay: 300ms;
 
       /* Theamable */
@@ -298,7 +298,8 @@ module.exports = component.register('gaia-switch', {
       height: 15px;
       border-radius: 50%;
       transform: scale(0);
-      transition: transform 300ms ease;
+      transition-property: transform;
+      transition-duration: 300ms;
       transition-delay: 600ms;
 
       /* Themeable */
@@ -402,17 +403,18 @@ var convert = {
   },
 
   toChecked: function(edge) {
-    return this[dir()].edges[edge]
+    return this[dir()].edges[edge];
   },
 
   toEdge: function(checked) {
-    return this[dir()].checked[checked]
+    return this[dir()].checked[checked];
   }
 };
 
 function on(el, name, fn) { el.addEventListener(name, fn); }
 function off(el, name, fn) { el.removeEventListener(name, fn); }
 
-});})((function(n,w){return typeof define=='function'&&define.amd?
-define:typeof module=='object'?function(c){c(require,exports,module);}:function(c){
-var m={exports:{}},r=function(n){return w[n];};w[n]=c(r,m.exports,m)||m.exports;};})('gaia-switch',this));
+});})(typeof define=='function'&&define.amd?define
+:(function(n,w){'use strict';return typeof module=='object'?function(c){
+c(require,exports,module);}:function(c){var m={exports:{}};c(function(n){
+return w[n];},m.exports,m);w[n]=m.exports;};})('gaia-switch',this));
