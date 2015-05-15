@@ -6,6 +6,13 @@
 $ bower install gaia-components/gaia-switch
 ```
 
+Then include folowing files in HTML
+
+```html
+<script src="bower_components/drag/drag.js"></script>
+<script src="bower_components/gaia-switch/gaia-switch.js"></script>
+```
+
 ## Examples
 
 - [Example](http://gaia-components.github.io/gaia-switch/)
