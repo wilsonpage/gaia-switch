@@ -26,6 +26,14 @@ suite('gia-switch', function() {
     assert.isFalse(this.el.checked);
   });
 
+  test('It toggles `aria-checked` when clicked (accessibility)', function() {
+    this.el.click();
+    assert.equal(this.el.getAttribute('aria-checked'), 'true');
+
+    this.el.click();
+    assert.equal(this.el.getAttribute('aria-checked'), 'false');
+  });
+
   test('It should respond to attribute changes', function() {
     this.el.setAttribute('checked', '');
     assert.isTrue(this.el.checked);
@@ -177,10 +185,43 @@ suite('gia-switch', function() {
     assert.equal(this.el.disabled, true);
   });
 
+  test('It can be aria-disabled via attribute or property', function() {
+    this.el.disabled = true;
+    assert.equal(this.el.getAttribute('aria-disabled'), 'true');
+
+    this.el.disabled = false;
+    assert.isFalse(this.el.hasAttribute('aria-disabled'));
+
+    this.el.disabled = 'foo';
+    assert.isTrue(this.el.hasAttribute('aria-disabled'));
+
+    this.el.setAttribute('disabled', true);
+    assert.equal(this.el.getAttribute('aria-disabled'), 'true');
+  });
+
   test('It applies the initial `disabled` value on creation', function() {
     this.dom.innerHTML = '<gaia-switch disabled></gaia-switch>';
     var el = this.dom.firstElementChild;
     assert.equal(el.disabled, true);
+  });
+
+  test('It applies the initial aria value on creation (accessibility)', function() {
+    this.sinon.useFakeTimers();
+    this.dom.innerHTML = '<gaia-switch disabled></gaia-switch>';
+    this.sinon.clock.tick(50);
+    var el = this.dom.firstElementChild;
+
+    assert.equal(el.getAttribute('role'), 'switch');
+    assert.equal(el.getAttribute('aria-disabled'), 'true');
+    assert.equal(el.getAttribute('aria-checked'), 'false');
+
+    this.dom.innerHTML = '<gaia-switch></gaia-switch>';
+    this.sinon.clock.tick(50);
+    el = this.dom.firstElementChild;
+
+    assert.equal(el.getAttribute('role'), 'switch');
+    assert.isFalse(el.hasAttribute('aria-disabled'));
+    assert.equal(el.getAttribute('aria-checked'), 'false');
   });
 
   test('It ignores clicks when disabled', function() {

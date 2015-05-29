@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>&lt;gaia-switch&gt;</title>
+  <meta name="description" content="gaia-switch perf" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="../bower_components/base/base.css">
+  <link rel="stylesheet" href="../bower_components/gaia-theme/gaia-theme.css">
+  <script src="../bower_components/gaia-component/gaia-component.js"></script>
+  <script src="../bower_components/drag/drag.js"></script>
+  <script src="../gaia-switch.js"></script>
+  <style>
+  #result {
+    font: 8px;
+  }
+  </style>
+</head>
+<body role="application" class="theme-settings">
+<input id="input" value="100"/>
+<button id="run">Run</button>
+<div id="result"></div>
+<hr/>
+<div id="container"></div>
+
+<script>
+var results = []; // save test results
+var mean = 0;  // average time
+
+run.onclick = function() {
+  container.innerHTML = '';
+  var count = Number(input.value);
+  var startTime = performance.now();
+  var times = 30;
+
+  for (var i = 0; i < count; i++) {
+    container.insertAdjacentHTML('beforeend', `<gaia-switch></gaia-switch>
+      <gaia-switch checked></gaia-switch>
+      <gaia-switch disabled></gaia-switch>`);
+  }
+
+  results.push((performance.now() - startTime).toFixed(2));
+  mean = results.reduce(function(sum, num, idx) {
+    return sum + (num - sum)/(idx + 1)}, 0).toFixed(2);
+  // render result
+  result.innerHTML = '[mean: <font color="green">' + mean +
+    'ms</font> of ' + results.length + '], ' + results.join(' | ');
+};
+</script>
+</body>
+</html>
