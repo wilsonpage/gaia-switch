@@ -32,6 +32,7 @@
     "url": "https://github.com/gaia-components/gaia-switch/issues"
   },
   "browser": {
-    "gaia-component": "./bower_components/gaia-component/gaia-component.js"
+    "gaia-component": "./bower_components/gaia-component/gaia-component.js",
+    "drag": "./bower_components/drag/drag.js"
   }
 }
