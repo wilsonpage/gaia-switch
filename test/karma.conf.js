@@ -23,11 +23,16 @@ module.exports = function(config) {
       'bower_components/gaia-component/gaia-component.js',
       'bower_components/drag/drag.js',
       'gaia-switch.js',
-      'test/test.js'
+      'node_modules/test-utils/lib/*.js',
+      'node_modules/test-utils/src/utils.js',
+      'node_modules/test-utils/src/accessibility.js',
+      'test/test.js',
+      'test/accessibility.js'
     ],
 
     proxies: {
-      '/bower_components/': 'http://localhost:9876/base/bower_components/'
+      '/bower_components/': 'http://localhost:9876/base/bower_components/',
+      '/node_modules/': 'http://localhost:9876/base/node_modules/'
     }
   });
 };

@@ -13,7 +13,8 @@
     "karma-firefox-launcher": "^0.1.4",
     "karma-mocha": "^0.1.10",
     "karma-sinon-chai": "^0.3.0",
-    "mozilla-download": "^1.0.5"
+    "mozilla-download": "^1.0.5",
+    "test-utils": "gaia-components/test-utils#v0.0.2"
   },
   "scripts": {
     "install": "bower install",
