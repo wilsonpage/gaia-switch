@@ -19,8 +19,6 @@ var debug = 0 ? console.log.bind(console) : function() {};
  */
 
 module.exports = component.register('gaia-switch', {
-  extends: HTMLInputElement.prototype,
-
   rtl: true,
 
   created: function() {
