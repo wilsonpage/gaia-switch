@@ -1,7 +1,14 @@
 /* jshint maxlen: 100 */
 /*global sinon, assert, suite, setup, teardown, test */
 'use strict';
-suite('gia-switch', function() {
+suite('gaia-switch', function() {
+
+  /**
+   * Utils
+   */
+  var touch = window['test-utils'].touch;
+  var afterNext = window['test-utils'].afterNext;
+
   setup(function() {
     this.sinon = sinon.sandbox.create();
     this.dom = document.createElement('div');
@@ -231,63 +238,4 @@ suite('gia-switch', function() {
 
     sinon.assert.notCalled(this.el.toggle);
   });
-
-  /**
-   * Utils
-   */
-
-  function afterNext(obj, method) {
-    var wait = 100;
-    var timeout;
-
-    return new Promise((resolve, reject) => {
-      var real = obj[method];
-
-      // If the function doesn't run
-      // after `wait` period: reject.
-      timeout = setTimeout(() => {
-        obj[method] = real;
-        reject(new Error('timeout exceeded'));
-      }, wait);
-
-      obj[method] = function() {
-        clearTimeout(timeout);
-        obj[method] = real; // restore asap
-        var result = real.apply(obj, arguments);
-        resolve(result);
-        return result;
-      };
-    });
-  }
-
-  function touch(el, type, x, y) {
-    var touchObj = document.createTouch(
-      window,
-      el,
-      0,
-      x || 0,
-      y || 0);
-
-    var touchList = document.createTouchList([touchObj]);
-    var event = document.createEvent('TouchEvent');
-
-    event.initTouchEvent(
-      type, // type
-      true, // bubbles
-      true, // cancelable
-      window, // view
-      null, // detail
-      false, // ctrlKey
-      false, // altKey
-      false, // shiftKey
-      false, // metaKey
-      touchList, // touches
-      touchList, // targetTouches
-      touchList); // changedTouches
-
-    // Set the timestamp to be sure
-    Object.defineProperty(event, 'timeStamp', { value: Date.now() });
-
-    el.dispatchEvent(event);
-  }
 });
