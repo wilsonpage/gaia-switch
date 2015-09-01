@@ -14,7 +14,7 @@
     "karma-mocha": "^0.1.10",
     "karma-sinon-chai": "^0.3.0",
     "mozilla-download": "^1.0.5",
-    "test-utils": "git://github.com/gaia-components/test-utils.git#v0.0.2",
+    "test-utils": "git://github.com/gaia-components/test-utils.git#v0.0.4",
     "chai": "3.0.0",
     "marionette-firefox-host": "1.0.3",
     "marionette-helper": "0.3.1",
