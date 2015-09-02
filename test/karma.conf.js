@@ -23,7 +23,7 @@ module.exports = function(config) {
       'bower_components/gaia-component/gaia-component.js',
       'bower_components/drag/drag.js',
       'gaia-switch.js',
-      'node_modules/test-utils/lib/*.js',
+      'node_modules/test-utils/node_modules/axe-core/axe.min.js',
       'node_modules/test-utils/src/utils.js',
       'node_modules/test-utils/src/accessibility.js',
       'test/test.js',
