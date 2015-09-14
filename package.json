@@ -16,15 +16,15 @@
     "mozilla-download": "^1.0.5",
     "test-utils": "git://github.com/gaia-components/test-utils.git#v0.0.4",
     "chai": "3.0.0",
-    "marionette-firefox-host": "1.0.3",
+    "marionette-firefox-host": "1.0.4",
     "marionette-helper": "0.3.1",
-    "marionette-js-runner": "1.1.2"
+    "marionette-js-runner": "1.1.3"
   },
   "scripts": {
     "install": "bower install",
     "test-lint": "./node_modules/jshint/bin/jshint gaia-switch.js test/*.js",
     "test-unit": "./node_modules/karma/bin/karma start test/karma.conf.js --single-run",
-    "test-integration": "./node_modules/.bin/marionette-mocha --host marionette-firefox-host --runtime $FIREFOX_NIGHTLY_BIN --timeout 6000s test/test-integration.js",
+    "test-integration": "./node_modules/.bin/marionette-mocha --reporter spec --host marionette-firefox-host --runtime $FIREFOX_NIGHTLY_BIN --timeout 6000s test/test-integration.js",
     "test-unit-dev": "./node_modules/karma/bin/karma start test/karma.conf.js",
     "bundle": "mkdir -p dist && browserify gaia-switch.js --outfile ./dist/gaia-switch.js --standalone GaiaSwitch",
     "es5": "mkdir -p dist && babel ./dist/gaia-switch.js --out-file ./dist/gaia-switch-es5.js",
