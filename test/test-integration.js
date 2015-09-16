@@ -1,4 +1,4 @@
-/* global marionette, setup, test */
+/* global marionette, suite, setup, test */
 
 'use strict';
 
@@ -53,6 +53,14 @@ marionette('gaia-switch', function() {
     enabled: false,
     checked: true,
     checkedOnAction: [true, true]
+  }, {
+    selector: '#switch-4',
+    enabled: true,
+    checked: true
+  }, {
+    selector: '#switch-5',
+    enabled: true,
+    checked: false
   }];
 
   function isChecked(subject) {
@@ -83,14 +91,49 @@ marionette('gaia-switch', function() {
     });
   });
 
-  test('gaia-switch after user action', function() {
-    ['click', 'tap'].forEach(function(action) {
-      switches.forEach(function(aSwitch) {
-        aSwitch.checkedOnAction.forEach(function(checked) {
-          aSwitch.element[action]();
-          assert.equal(isChecked(aSwitch.element), checked, aSwitch.selector);
+  test('gaia-switch becomes checked/unchecked when tapped or clicked',
+    function() {
+      ['click', 'tap'].forEach(function(action) {
+        switches.forEach(function(aSwitch) {
+          if (!aSwitch.checkedOnAction) {
+            return;
+          }
+          aSwitch.checkedOnAction.forEach(function(checked) {
+            if (aSwitch.enabled) {
+              aSwitch.element[action]();
+              assert.equal(isChecked(aSwitch.element), checked,
+                aSwitch.selector);
+            } else {
+              try {
+                aSwitch.element[action]();
+              } catch (err) {
+                // NOTE: selenium checks for isEnabled does not support custom
+                // elements and will always return true. Although from a11y
+                // standpoint it is disabled.
+                // See: https://code.google.com/p/selenium/source/browse/
+                //              javascript/atoms/dom.js#324
+                assert.equal(err.type, 'ElementNotAccessibleError');
+              }
+            }
+          });
         });
       });
     });
+
+  suite('gaia-switches that are not fully accessible', function() {
+    test('clicking/tapping on gaia-switch that has no label throws an error',
+      function() {
+        try {
+          switches[4].element.click();
+        } catch (err) {
+          // If gaia-switch does not have an accessible name that comes from,
+          // for example, an aria-label or a label element clicking/tapping on
+          // it will raise an ElementNotAccessibleError exception when
+          // raisesAccessibilityExceptions is set to true.
+          assert.equal(err.type, 'ElementNotAccessibleError');
+          assert.isTrue(
+            err.message.indexOf('Element is missing an accesible name') > -1);
+        }
+      });
   });
 });
