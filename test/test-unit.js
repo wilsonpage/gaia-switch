@@ -7,6 +7,7 @@ suite('gaia-switch', function() {
    * Utils
    */
   var touch = window['test-utils'].touch;
+  var accessibility = window['test-utils'].accessibility;
   var afterNext = window['test-utils'].afterNext;
 
   setup(function() {
@@ -237,5 +238,69 @@ suite('gaia-switch', function() {
     this.el.click();
 
     sinon.assert.notCalled(this.el.toggle);
+  });
+
+  suite('accessibility', function() {
+    /**
+     * Accessibility test utils module tests the following things, amongst other
+     * checks (all at once).:
+     *  - ARIA attributes specific checks
+     *  - accesskey uniqueness if applicable
+     *  - Presence of alternative descriptions, labels and names
+     *  - Color contrast
+     *  - Markup is semantically correct from a11y standpoint
+     *  - Heading order
+     *  - Frame/document title and language
+     *  - Landmarks if applicable
+     *  - Keyboard focusability and tabindex
+     *
+     * Its checks are called at different stages and within different states of
+     * the component.
+     */
+
+    test('gaia-switch passes accessibility checks when it is checked and ' +
+      'unchecked', function(done) {
+      accessibility.check(this.dom).then(() => {
+        this.el.click();
+        return accessibility.check(this.dom);
+      }).then(() => {
+        this.el.click();
+        return accessibility.check(this.dom);
+      }).then(() => {
+        this.el.setAttribute('checked', '');
+        return accessibility.check(this.dom);
+      }).then(done, done);
+    });
+
+    test('gaia-switch passes accessibility checks after drag', function(done) {
+      var handle = this.el.els.handle;
+      var pos = handle.getBoundingClientRect();
+
+      touch(handle, 'touchstart', pos.x, pos.y);
+      touch(handle, 'touchstart', pos.x, pos.y);
+      touch(handle, 'touchmove', pos.x+=5, pos.y);
+      touch(handle, 'touchmove', pos.x+=5, pos.y);
+      touch(handle, 'touchmove', pos.x+=10, pos.y);
+      touch(handle, 'touchend', pos.x, pos.y);
+
+      accessibility.check(this.dom).then(done, done);
+    });
+
+    test('gaia-switch passes accessibility checks when it is enabled and ' +
+      'disabled', function(done) {
+      accessibility.check(this.dom).then(() => {
+        this.el.disabled = true;
+        return accessibility.check(this.dom);
+      }).then(() => {
+        this.el.disabled = false;
+        return accessibility.check(this.dom);
+      }).then(() => {
+        this.el.disabled = 'foo';
+        return accessibility.check(this.dom);
+      }).then(() => {
+        this.el.setAttribute('disabled', true);
+        return accessibility.check(this.dom);
+      }).then(done, done);
+    });
   });
 });
