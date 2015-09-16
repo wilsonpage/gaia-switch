@@ -26,8 +26,7 @@ module.exports = function(config) {
       'node_modules/test-utils/node_modules/axe-core/axe.min.js',
       'node_modules/test-utils/src/utils.js',
       'node_modules/test-utils/src/accessibility.js',
-      'test/test.js',
-      'test/accessibility.js'
+      'test/test-unit.js'
     ],
 
     proxies: {

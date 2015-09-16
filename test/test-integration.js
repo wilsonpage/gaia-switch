@@ -1,4 +1,4 @@
-/* global marionette, suite, setup, test */
+/* global marionette, setup, test */
 
 'use strict';
 
@@ -55,10 +55,6 @@ marionette('gaia-switch', function() {
     checkedOnAction: [true, true]
   }, {
     selector: '#switch-4',
-    enabled: true,
-    checked: true
-  }, {
-    selector: '#switch-5',
     enabled: true,
     checked: false
   }];
@@ -119,21 +115,4 @@ marionette('gaia-switch', function() {
         });
       });
     });
-
-  suite('gaia-switches that are not fully accessible', function() {
-    test('clicking/tapping on gaia-switch that has no label throws an error',
-      function() {
-        try {
-          switches[4].element.click();
-        } catch (err) {
-          // If gaia-switch does not have an accessible name that comes from,
-          // for example, an aria-label or a label element clicking/tapping on
-          // it will raise an ElementNotAccessibleError exception when
-          // raisesAccessibilityExceptions is set to true.
-          assert.equal(err.type, 'ElementNotAccessibleError');
-          assert.isTrue(
-            err.message.indexOf('Element is missing an accesible name') > -1);
-        }
-      });
-  });
 });
