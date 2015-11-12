@@ -240,6 +240,13 @@ suite('gaia-switch', function() {
     sinon.assert.notCalled(this.el.toggle);
   });
 
+  test('`disabled` can be set straight after createElement()', function() {
+    var el = document.createElement('gaia-switch');
+    el.disabled = true;
+    assert.equal(el.getAttribute('disabled'), '');
+    assert.equal(el.disabled, true);
+  });
+
   suite('accessibility', function() {
     /**
      * Accessibility test utils module tests the following things, amongst other
