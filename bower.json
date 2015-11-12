@@ -25,5 +25,8 @@
   "dependencies": {
     "drag": "gaia-components/drag#~0.2.0",
     "gaia-component": "gaia-components/gaia-component#~0.4.0"
+  },
+  "resolutions": {
+    "gaia-component": "~0.4.0"
   }
 }
