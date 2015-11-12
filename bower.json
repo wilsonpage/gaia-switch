@@ -25,6 +25,6 @@
   },
   "dependencies": {
     "drag": "gaia-components/drag#~0.2.0",
-    "gaia-component": "gaia-components/gaia-component#^0.3.6"
+    "gaia-component": "gaia-components/gaia-component#~0.4.0"
   }
 }

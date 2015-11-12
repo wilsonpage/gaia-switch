@@ -51,7 +51,7 @@ var convert = {
  */
 
 module.exports = component.register('gaia-switch', {
-  rtl: true,
+  dirObserver: true,
 
   created: function() {
     this.setupShadowRoot();
