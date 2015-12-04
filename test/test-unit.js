@@ -1,7 +1,7 @@
 /* jshint maxlen: 100 */
 /*global sinon, assert, suite, setup, teardown, test */
 'use strict';
-suite('gaia-switch', function() {
+suite('fxos-switch', function() {
 
   /**
    * Utils
@@ -13,7 +13,7 @@ suite('gaia-switch', function() {
   setup(function() {
     this.sinon = sinon.sandbox.create();
     this.dom = document.createElement('div');
-    this.dom.innerHTML = '<gaia-switch></gaia-switch>';
+    this.dom.innerHTML = '<fxos-switch></fxos-switch>';
     this.el = this.dom.firstElementChild;
     document.body.appendChild(this.dom);
   });
@@ -208,14 +208,14 @@ suite('gaia-switch', function() {
   });
 
   test('It applies the initial `disabled` value on creation', function() {
-    this.dom.innerHTML = '<gaia-switch disabled></gaia-switch>';
+    this.dom.innerHTML = '<fxos-switch disabled></fxos-switch>';
     var el = this.dom.firstElementChild;
     assert.equal(el.disabled, true);
   });
 
   test('It applies the initial aria value on creation (accessibility)', function() {
     this.sinon.useFakeTimers();
-    this.dom.innerHTML = '<gaia-switch disabled></gaia-switch>';
+    this.dom.innerHTML = '<fxos-switch disabled></fxos-switch>';
     this.sinon.clock.tick(50);
     var el = this.dom.firstElementChild;
 
@@ -223,7 +223,7 @@ suite('gaia-switch', function() {
     assert.equal(el.getAttribute('aria-disabled'), 'true');
     assert.equal(el.getAttribute('aria-checked'), 'false');
 
-    this.dom.innerHTML = '<gaia-switch></gaia-switch>';
+    this.dom.innerHTML = '<fxos-switch></fxos-switch>';
     this.sinon.clock.tick(50);
     el = this.dom.firstElementChild;
 
@@ -241,7 +241,7 @@ suite('gaia-switch', function() {
   });
 
   test('`disabled` can be set straight after createElement()', function() {
-    var el = document.createElement('gaia-switch');
+    var el = document.createElement('fxos-switch');
     el.disabled = true;
     assert.equal(el.getAttribute('disabled'), '');
     assert.equal(el.disabled, true);
@@ -265,7 +265,7 @@ suite('gaia-switch', function() {
      * the component.
      */
 
-    test('gaia-switch passes accessibility checks when it is checked and ' +
+    test('fxos-switch passes accessibility checks when it is checked and ' +
       'unchecked', function(done) {
       accessibility.check(this.dom).then(() => {
         this.el.click();
@@ -279,7 +279,7 @@ suite('gaia-switch', function() {
       }).then(done, done);
     });
 
-    test('gaia-switch passes accessibility checks after drag', function(done) {
+    test('fxos-switch passes accessibility checks after drag', function(done) {
       var handle = this.el.els.handle;
       var pos = handle.getBoundingClientRect();
 
@@ -293,7 +293,7 @@ suite('gaia-switch', function() {
       accessibility.check(this.dom).then(done, done);
     });
 
-    test('gaia-switch passes accessibility checks when it is enabled and ' +
+    test('fxos-switch passes accessibility checks when it is enabled and ' +
       'disabled', function(done) {
       accessibility.check(this.dom).then(() => {
         this.el.disabled = true;

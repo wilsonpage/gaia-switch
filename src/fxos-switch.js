@@ -1,11 +1,9 @@
-/* globals define */
-(function(define){'use strict';define(function(require,exports,module){
 
 /**
  * Dependencies
  */
 
-var component = require('gaia-component');
+var component = require('fxos-component');
 var Drag = require('drag');
 
 /**
@@ -50,7 +48,7 @@ var convert = {
  * Exports
  */
 
-module.exports = component.register('gaia-switch', {
+module.exports = component.register('fxos-switch', {
   dirObserver: true,
 
   created: function() {
@@ -85,7 +83,7 @@ module.exports = component.register('gaia-switch', {
 
   /**
    * Accessibility enhancements.
-   * Read gaia-switch as switch.
+   * Read fxos-switch as switch.
    * make it tabable
    * read its checked and disabled state
    */
@@ -237,9 +235,6 @@ module.exports = component.register('gaia-switch', {
       opacity: 0.5;
     }
 
-    /** Inner
-     ---------------------------------------------------------*/
-
     .inner {
       display: block;
       width: 50px;
@@ -247,57 +242,37 @@ module.exports = component.register('gaia-switch', {
       direction: ltr;
     }
 
-    /** Track
-     ---------------------------------------------------------*/
-
     .track {
       position: relative;
+
       width: 100%;
       height: 100%;
       border-radius: 18px;
 
-      /* Themeable */
-
-      background:
-        var(--switch-background,
-        var(--background-minus,
-        var(--background-plus,
-        rgba(0,0,0,0.2))));
+      background: var(--fxos-switch-background);
     }
-
-    /** Track Background
-     ---------------------------------------------------------*/
 
     .track:after {
       content: " ";
-      display: block;
       position: absolute;
       left: 0;
       top: 0;
+
+      display: block;
       width: 100%;
       height: 100%;
+
       border-radius: 25px;
       transform: scale(0);
       transition-property: transform;
       transition-duration: 200ms;
       transition-delay: 300ms;
-
-      /* Theamable */
-
-      background-color:
-        var(--highlight-color, #000)
+      background:
+        var(--fxos-switch-checked-color,
+        var(--fxos-brand-color));
     }
 
-    /**
-     * [checked]
-     */
-
-    [checked] .track:after {
-      transform: scale(1);
-    }
-
-    /** Handle
-     ---------------------------------------------------------*/
+    [checked] .track:after { transform: scale(1); }
 
     .handle {
       position: relative;
@@ -306,16 +281,9 @@ module.exports = component.register('gaia-switch', {
       height: 32px;
     }
 
-    /**
-     * transitions-on
-     */
-
     .inner:not(.transitions-on) .handle {
       transition: none !important;
     }
-
-    /** Handle Head
-     ---------------------------------------------------------*/
 
     .handle-head {
       display: flex;
@@ -331,25 +299,9 @@ module.exports = component.register('gaia-switch', {
       align-items: center;
       justify-content: center;
 
-      /* Themable */
-
-      background:
-        var(--switch-head-background,
-        var(--input-background,
-        var(--button-background,
-        var(--background-plus,
-        #fff))));
-
-      border-color:
-        var(--switch-head-border-color,
-        var(--switch-background,
-        var(--border-color,
-        var(--background-minus,
-        rgba(0,0,0,0.2)))));
+      background: var(--fxos-switch-handle-background);
+      color: var(--fxos-switch-background);;
     }
-
-    /** Handle Head Circle
-     ---------------------------------------------------------*/
 
     .handle-head:after {
       content: "";
@@ -362,20 +314,12 @@ module.exports = component.register('gaia-switch', {
       transition-duration: 300ms;
       transition-delay: 600ms;
 
-      /* Themeable */
-
       background:
-        var(--highlight-color, #000)
+        var(--fxos-switch-checked-color,
+        var(--fxos-brand-color));
     }
 
-    /**
-     * [checked]
-     */
-
-    [checked] .handle-head:after {
-      transform: scale(1);
-    }
-
+    [checked] .handle-head:after { transform: scale(1); }
   </style>`
 });
 
@@ -384,13 +328,13 @@ module.exports = component.register('gaia-switch', {
 addEventListener('keypress', function(e) {
   var isSpaceKey = e.which === 32;
   var el = document.activeElement;
-  var isGaiaSwitch = el.tagName === 'GAIA-SWITCH';
-  if (isSpaceKey && isGaiaSwitch) { el.click(); }
+  var isSwitch = el.localName === 'fxos-switch';
+  if (isSpaceKey && isSwitch) { el.click(); }
 });
 
 /**
  * TODO: Replace this <label> stuff
- * with smarter <gaia-label>
+ * with smarter <fxos-label>
  */
 
 // Bind a 'click' delegate to the
@@ -412,7 +356,7 @@ function getLinkedSwitch(label) {
   if (!label) { return; }
   var id = label.getAttribute('for');
   var el = id && document.getElementById(id);
-  return el && el.tagName === 'GAIA-SWITCH' ? el : null;
+  return el && el.localName === 'fxos-switch' ? el : null;
 }
 
 /**
@@ -435,14 +379,7 @@ function getLabel(el) {
  *
  * @return {String} ('ltr'|'rtl')
  */
-function dir() {
-  return document.dir || 'ltr';
-}
+function dir() { return document.dir || 'ltr'; }
 
 function on(el, name, fn) { el.addEventListener(name, fn); }
 function off(el, name, fn) { el.removeEventListener(name, fn); }
-
-});})(typeof define=='function'&&define.amd?define
-:(function(n,w){'use strict';return typeof module=='object'?function(c){
-c(require,exports,module);}:function(c){var m={exports:{}};c(function(n){
-return w[n];},m.exports,m);w[n]=m.exports;};})('gaia-switch',this));

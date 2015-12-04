@@ -2,14 +2,13 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>&lt;gaia-switch&gt;</title>
-  <meta name="description" content="gaia-switch perf" />
+  <title>&lt;fxos-switch&gt;</title>
+  <meta name="description" content="fxos-switch perf" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <link rel="stylesheet" href="../bower_components/base/base.css">
-  <link rel="stylesheet" href="../bower_components/gaia-theme/gaia-theme.css">
-  <script src="../bower_components/gaia-component/gaia-component.js"></script>
+  <link rel="stylesheet" href="../bower_components/fxos-theme/fxos-theme.css">
+  <script src="../bower_components/fxos-component/fxos-component.js"></script>
   <script src="../bower_components/drag/drag.js"></script>
-  <script src="../gaia-switch.js"></script>
+  <script src="../fxos-switch.js"></script>
   <style>
   #result {
     font: 8px;
@@ -34,9 +33,9 @@ run.onclick = function() {
   var times = 30;
 
   for (var i = 0; i < count; i++) {
-    container.insertAdjacentHTML('beforeend', `<gaia-switch></gaia-switch>
-      <gaia-switch checked></gaia-switch>
-      <gaia-switch disabled></gaia-switch>`);
+    container.insertAdjacentHTML('beforeend', `<fxos-switch></fxos-switch>
+      <fxos-switch checked></fxos-switch>
+      <fxos-switch disabled></fxos-switch>`);
   }
 
   results.push((performance.now() - startTime).toFixed(2));

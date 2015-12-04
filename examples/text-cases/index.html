@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>fxos-switch</title>
+  <meta name="description" content="fxos-switch demo" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+  <link rel="stylesheet" href="node_modules/fxos-theme/fxos-theme.css">
+  <link rel="stylesheet" href="node_modules/fxos-font/fxos-font.css">
+  <script src="node_modules/fxos-theme/lib/fxos-theme-selector.js"></script>
+  <script src="node_modules/fxos-component/fxos-component.js"></script>
+  <script src="node_modules/fxos-list/fxos-list.js"></script>
+  <script src="fxos-switch.js"></script>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--fxos-background);
+      font-family: 'FiraSans';
+    }
+
+    fxos-theme-selector {
+      position: relative !important;
+      display: block;
+    }
+  </style>
+</head>
+<body role="application">
+  <fxos-theme-selector></fxos-theme-selector>
+  <fxos-list>
+    <li>
+      <label flex>This is a label</label>
+      <fxos-switch checked></fxos-switch>
+    </li>
+    <li>
+      <label flex for="switch-2">This is a label</label>
+      <fxos-switch id="switch-2"></fxos-switch>
+    </li>
+    <li>
+      <label flex>This is a label</label>
+      <fxos-switch disabled></fxos-switch>
+    </li>
+  </fxos-list>
+</body>
+</html>

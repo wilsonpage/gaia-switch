@@ -1,40 +1,40 @@
-# &lt;gaia-switch&gt; ![](https://travis-ci.org/gaia-components/gaia-switch.svg)  [![devDependency Status](https://david-dm.org/gaia-components/gaia-switch/dev-status.svg)](https://david-dm.org/gaia-components/gaia-switch#info=devDependencies)
+# &lt;fxos-switch&gt; ![](https://travis-ci.org/fxos-components/fxos-switch.svg)
 
 ## Installation
 
 ```bash
-$ bower install gaia-components/gaia-switch
+$ npm install fxos-switch
 ```
 
 Then include folowing files in HTML
 
 ```html
-<script src="bower_components/drag/drag.js"></script>
-<script src="bower_components/gaia-switch/gaia-switch.js"></script>
+<script src="node_modules/fxos-component/fxos-component.js"></script>
+<script src="node_modules/fxos-switch/fxos-switch.js"></script>
 ```
 
 ## Examples
 
-- [Example](http://gaia-components.github.io/gaia-switch/)
+- [Example](http://fxos-components.github.io/fxos-switch/)
 
 ## Usage
 
 Normal
 
 ```
-<gaia-switch></gaia-switch>
+<fxos-switch></fxos-switch>
 ```
 
 Checked
 
 ```
-<gaia-switch checked></gaia-switch>
+<fxos-switch checked></fxos-switch>
 ```
 
 Disabled
 
 ```
-<gaia-switch disabled></gaia-switch>
+<fxos-switch disabled></fxos-switch>
 ```
 
 ## Readiness
@@ -44,6 +44,13 @@ Disabled
 - [ ] Performance
 - [ ] Visual/UX
 - [ ] RTL
+
+## Developing locally
+
+1. `git clone https://github.com/fxos-components/fxos-switch.git`
+2. `cd fxos-switch`
+3. `npm install` (NPM3)
+4. `npm start`
 
 ## Tests
 
